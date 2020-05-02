@@ -1,0 +1,13 @@
+attrs==19.3.0
+botocore==1.16.1
+chalice==1.14.0
+click==7.1.2
+docutils==0.15.2
+enum-compat==0.0.3
+jmespath==0.9.5
+mongoengine==0.19.1
+pydantic==1.5.1
+pymongo==3.10.1
+python-dateutil==2.8.1
+six==1.14.0
+urllib3==1.25.9

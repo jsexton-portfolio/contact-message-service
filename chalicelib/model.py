@@ -1,0 +1,87 @@
+import json
+from datetime import datetime
+from enum import Enum
+from typing import Sequence
+
+from mongoengine import StringField, BooleanField, EmbeddedDocumentField, DateTimeField, EmailField, \
+    ListField, ReferenceField
+from mongoengine_goodjson import Document, EmbeddedDocument
+
+from chalicelib.helper import CamelCaseAttributesMixin
+
+
+class Reason(Enum):
+    """
+    Represents all possible reasons a message was constructed
+    """
+    BUSINESS = 'business'
+    QUESTION = 'question'
+    FEEDBACK = 'feedback'
+    OTHER = 'other'
+
+
+class Sender(EmbeddedDocument):
+    """
+    Represents sender document in mongo
+    """
+    alias = StringField(max_length=50, required=True)
+    phone = StringField(min_length=3, max_length=20)
+    email = EmailField(required=True)
+    ip = StringField(required=True)
+    user_agent = StringField(name='userAgent')
+
+    def __getstate__(self):
+        return json.loads(self.to_json())
+
+
+class Reader(Document):
+    """
+    Represents reader document in mongo
+    """
+    id = StringField(required=True)
+    flagged = BooleanField(default=False, required=True)
+    time_updated = DateTimeField(name='timeCreated', default=datetime.utcnow(), required=True)
+
+    def __getstate__(self):
+        return json.loads(self.to_json())
+
+
+class ReaderCollection(CamelCaseAttributesMixin):
+    """
+    Container for list of readers.
+    Provides meta information about the list of readers.
+    Will be most commonly used in responses
+    """
+
+    def __init__(self, readers: Sequence[Reader]):
+        self.count = len(readers)
+        self.reader_list = readers
+
+
+class ContactMessage(Document):
+    """
+    Represents contact message document in mongo
+    """
+    message = StringField(min_length=100, max_length=10000, required=True)
+    reason = StringField(enum=Reason, required=True)
+    archived = BooleanField(default=False, required=True)
+    responded = BooleanField(default=False, required=True)
+    sender = EmbeddedDocumentField(document_type=Sender, required=True)
+    readers = ListField(ReferenceField(Reader))
+    time_created = DateTimeField(name='timeCreated', default=datetime.utcnow(), required=True)
+    time_updated = DateTimeField(name='timeUpdated', default=datetime.utcnow(), required=True)
+
+    def __getstate__(self):
+        return json.loads(self.to_json(follow_reference=True))
+
+
+class ContactMessageCollection(CamelCaseAttributesMixin):
+    """
+    Container for list of contact messages.
+    Provides meta information about the list of contact messages.
+    Will be most commonly used in responses
+    """
+
+    def __init__(self, contact_messages: Sequence[ContactMessage]):
+        self.count = len(contact_messages)
+        self.contact_messages = contact_messages
