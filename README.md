@@ -8,12 +8,12 @@ Service used to interface with portfolio application contact messages
 ##### Request Body Schema:
 ```json
 {
-  "message": "Required: 100 minimum length - 10000 maximum length",
-  "reason": "Required (Enum): Business|Question|Feedback|Other",
+  "message": "(Required: 100 minimum length - 10000 maximum length)",
+  "reason": "(Required (Enum): Business|Question|Feedback|Other)",
   "sender": {
-    "alias": "Required: Sender's alias",
-    "phone": "Optional: Sender's phone number",
-    "email": "Required: Sender's email address"
+    "alias": "(Required: Sender's alias)",
+    "phone": "(Optional: Sender's phone number)",
+    "email": "(Required: Sender's email address)"
   } 
 }
 ```
@@ -54,7 +54,10 @@ Service used to interface with portfolio application contact messages
     "meta": {
         "message": "Given inputs were incorrect. Consult the below details to address the issue.",
         "errorDetails": [ 
-          // Error details objects explaining how to fix the issue. 
+          {
+            "fieldName": "(The field name that caused an issue)",
+            "description": "(Description detailing why the field caused an issue)"
+          }
         ],
         "schemas": {
             "requestBody": {
