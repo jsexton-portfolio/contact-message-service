@@ -7,7 +7,9 @@ class CamelCaseAttributesMixin:
     to convert all fields to camel case.
 
     WARNING: This mixin will break if the serialization library does not use __getstate__ to acquire information
-    about an object
+    about an object.
+
+    WARNING: This is not a recursive solution. Only properties at the root field will be updated.
     """
 
     def __getstate__(self):
