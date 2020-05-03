@@ -25,7 +25,7 @@ class FormValidationError(Exception):
 
 
 class SenderCreationForm(BaseModel):
-    alias: str
+    alias: str = Field(..., max_length=50)
     phone: Optional[str]
     email: EmailStr
 
@@ -54,7 +54,6 @@ class ContactMessageCreationForm(BaseModel):
 
 T = TypeVar('T')
 SUPPORTED_FORM_TYPES = {
-    SenderCreationForm,
     ContactMessageCreationForm,
 }
 
@@ -69,7 +68,7 @@ def resolve_form(json: Dict[str, Any], form_type: Type[T]) -> T:
     :return: The resolved form
     """
     if form_type not in SUPPORTED_FORM_TYPES:
-        raise ValueError(f'Unsupported form type: {form_type}')
+        raise ValueError(f'Unsupported form type: {form_type.__name__}')
 
     try:
         return form_type(**json)

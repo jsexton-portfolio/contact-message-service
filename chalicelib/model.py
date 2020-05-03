@@ -28,7 +28,7 @@ class Sender(EmbeddedDocument):
     phone = StringField(min_length=3, max_length=20)
     email = EmailField(required=True)
     ip = StringField(required=True)
-    user_agent = StringField(name='userAgent')
+    user_agent = StringField(db_field='userAgent', required=True)
 
     def __getstate__(self):
         return json.loads(self.to_json())
@@ -40,7 +40,7 @@ class Reader(Document):
     """
     id = StringField(required=True)
     flagged = BooleanField(default=False, required=True)
-    time_updated = DateTimeField(name='timeCreated', default=datetime.utcnow(), required=True)
+    time_updated = DateTimeField(db_field='timeUpdated', default=datetime.utcnow(), required=True)
 
     def __getstate__(self):
         return json.loads(self.to_json())
@@ -68,8 +68,8 @@ class ContactMessage(Document):
     responded = BooleanField(default=False, required=True)
     sender = EmbeddedDocumentField(document_type=Sender, required=True)
     readers = ListField(ReferenceField(Reader))
-    time_created = DateTimeField(name='timeCreated', default=datetime.utcnow(), required=True)
-    time_updated = DateTimeField(name='timeUpdated', default=datetime.utcnow(), required=True)
+    time_created = DateTimeField(db_field='timeCreated', default=datetime.utcnow(), required=True)
+    time_updated = DateTimeField(db_field='timeUpdated', default=datetime.utcnow(), required=True)
 
     def __getstate__(self):
         return json.loads(self.to_json(follow_reference=True))
