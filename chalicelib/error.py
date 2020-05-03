@@ -7,10 +7,12 @@ from chalicelib.service import ResourceNotFoundError
 
 def error_handler(decorated):
     """
+    Wraps functions with error handling capabilities. Be sure to include this decoration after all other decorators.
+
     @app.route('/)
     @error_handler
     def route():
-        pass
+        # route logic that potentially raises errors
     :param decorated: The function implementation that will be extended with error handling
     :return: The decorated function wrapped with error handling capabilities
     """
