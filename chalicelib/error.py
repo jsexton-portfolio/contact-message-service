@@ -23,7 +23,7 @@ def error_handler(decorated):
         except FormValidationError as ex:
             return response.bad(error_details=ex.error_details, schema=ex.schema)
         except Exception as ex:
-            logging.getLogger('contact-message-service').error("Caught exception for %s", ex, exc_info=True)
+            logging.getLogger('contact-message-service').error('Caught exception for %s', ex, exc_info=True)
             return response.internal_error()
 
     return wrapped_handler
