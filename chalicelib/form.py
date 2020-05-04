@@ -1,6 +1,6 @@
 from typing import TypeVar, Type, Dict, Any, Optional, Sequence
 
-from pydantic import BaseModel, Field, ValidationError, EmailStr, validator, Extra
+from pydantic import BaseModel, Field, ValidationError, EmailStr, Extra
 
 from chalicelib.model import Reason
 from chalicelib.response import ErrorDetail
@@ -25,17 +25,9 @@ class FormValidationError(Exception):
 
 
 class SenderCreationForm(BaseModel):
-    alias: str = Field(..., max_length=50)
+    alias: str = Field(..., min_length=1, max_length=50)
     phone: Optional[str]
     email: EmailStr
-
-    @classmethod
-    @validator('alias')
-    def alias_must_not_be_empty(cls, value):
-        if not value:
-            raise ValueError('Value must not be empty')
-
-        return value
 
     class Config:
         anystr_strip_whitespace = True
@@ -43,7 +35,7 @@ class SenderCreationForm(BaseModel):
 
 
 class ContactMessageCreationForm(BaseModel):
-    message: str = Field(..., min_length=100, max_length=10000)
+    message: str = Field(..., min_length=100, max_length=2000)
     reason: Reason
     sender: SenderCreationForm
 

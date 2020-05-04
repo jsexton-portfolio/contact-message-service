@@ -8,7 +8,7 @@ Service used to interface with portfolio application contact messages
 ##### Request Body Schema:
 ```json
 {
-  "message": "(Required: 100 minimum length - 10000 maximum length)",
+  "message": "(Required: 100 minimum length - 2000 maximum length)",
   "reason": "(Required (Enum): Business|Question|Feedback|Other)",
   "sender": {
     "alias": "(Required: Sender's alias)",
@@ -66,7 +66,7 @@ Service used to interface with portfolio application contact messages
                 "properties": {
                     "message": {
                         "title": "Message",
-                        "maxLength": 10000,
+                        "maxLength": 2000,
                         "minLength": 100,
                         "type": "string"
                     },

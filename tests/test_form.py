@@ -27,6 +27,8 @@ def test_resolve_form_when_form_is_valid(valid_form):
     assert contact_creation_form is not None
 
 
+# NOTE: In the future will need to make sure the removal of whitespace does not affect validation of expected lengths.
+
 # This currently does not work but will work soon.
 # See https://docs.pytest.org/en/latest/proposals/parametrize_with_fixtures.html
 # See https://github.com/pytest-dev/pytest/issues/349
