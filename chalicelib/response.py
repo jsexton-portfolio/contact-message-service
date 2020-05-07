@@ -1,4 +1,4 @@
-from typing import Any, Union, Dict, Sequence, Optional
+from typing import Any, Union, Sequence, Optional, Dict
 
 import jsonpickle
 from chalice import Response
@@ -11,9 +11,18 @@ class ErrorDetail(CamelCaseAttributesMixin):
     Represents any error information regarding a request. Will mostly be used in 400 Bad Request responses.
     """
 
-    def __init__(self, field_name: str, description: str):
-        self.field_name = field_name
+    def __init__(self, description: str):
         self.description = description
+
+
+class FieldErrorDetail(ErrorDetail):
+    """
+    Represents a field error and details around why this field caused an error and other meta data.
+    """
+
+    def __init__(self, description: str, field_name: str):
+        super().__init__(description)
+        self.field_name = field_name
 
 
 class MetaData(CamelCaseAttributesMixin):
@@ -23,16 +32,11 @@ class MetaData(CamelCaseAttributesMixin):
 
     def __init__(self,
                  message: str,
-                 error_details: Sequence[ErrorDetail] = None,
-                 schemas: Dict[str, Any] = None):
-        if schemas is None:
-            schemas = {}
-        if error_details is None:
-            error_details = []
-
+                 error_details: Optional[Sequence[ErrorDetail]] = None,
+                 schemas: Optional[Dict[str, Any]] = None):
         self.message = message
-        self.error_details = error_details
-        self.schemas = schemas
+        self.error_details = error_details or []
+        self.schemas = schemas or {}
 
 
 class ResponseBody:
@@ -42,7 +46,7 @@ class ResponseBody:
     All response bodies are expected to have success, meta and data fields.
     """
 
-    def __init__(self, success: bool, meta: MetaData, data: Optional[Any] = None):
+    def __init__(self, success: bool, meta: MetaData, data: Optional[Dict[str, Any]] = None):
         self.success = success
         self.meta = meta
         self.data = data
@@ -55,19 +59,21 @@ def ok_metadata() -> MetaData:
     """
     :return: Successful request (Ok) meta data
     """
-    return MetaData(message='Request completed successfully')
+    return metadata(message='Request completed successfully')
 
 
-def bad_metadata(error_details: Sequence[ErrorDetail], schema: Dict[str, Any]) -> MetaData:
+def bad_metadata(error_details: Sequence[ErrorDetail] = None,
+                 schema: Optional[Dict[str, Any]] = None) -> MetaData:
     """
     :param error_details: Error details that will be used to construct meta data
     :param schema: Schema that will be used to construct meta data
     :return: Bad request meta data
     """
-    return MetaData(
+    return metadata(
         message='Given inputs were incorrect. Consult the below details to address the issue.',
-        error_details=error_details,
-        schemas={'requestBody': schema})
+        error_details=error_details or [],
+        schemas={'requestBody': schema} if schema is not None else {}
+    )
 
 
 def not_found_metadata(identifier: Union[str, int]) -> MetaData:
@@ -75,14 +81,32 @@ def not_found_metadata(identifier: Union[str, int]) -> MetaData:
     :param identifier: Identifier that will be used to construct message in meta data
     :return: Not found meta data
     """
-    return MetaData(message=f'Resource with id {identifier} does not exist')
+    return metadata(message=f'Resource with id {identifier} does not exist')
 
 
 def internal_error_metadata() -> MetaData:
     """
     :return: Internal server error meta data
     """
-    return MetaData(message='Request failed due to internal server error')
+    return metadata(message='Request failed due to internal server error')
+
+
+def metadata(message: str,
+             error_details: Optional[Sequence[ErrorDetail]] = None,
+             schemas: Optional[Dict[str, Any]] = None) -> MetaData:
+    """
+    Factory method for metadata objects
+
+    :param error_details: Error details that will be used to construct meta data
+    :param schemas: Schema that will be used to construct meta data
+    :param message: The message that will be used in the meta object
+    :return: The created
+    """
+    return MetaData(
+        message=message,
+        error_details=error_details,
+        schemas=schemas
+    )
 
 
 def ok(data: Any) -> Response:
@@ -101,17 +125,16 @@ def created(data: Any) -> Response:
     return response(201, meta=ok_metadata(), data=data)
 
 
-def bad(error_details: Sequence[ErrorDetail], schema: Dict[str, Any] = None) -> Response:
+def bad(error_details: Sequence[ErrorDetail] = None,
+        schema: Optional[Dict[str, Any]] = None) -> Response:
     """
     :param error_details: Details detailing why the request was bad. These details will be used
     in the response body.
     :param schema: Request body  that will be displayed in meta information of response
     :return: Bad request response
     """
-    if schema is None:
-        schema = {}
-
-    return response(400, bad_metadata(error_details, schema))
+    response_metadata = bad_metadata(error_details=error_details, schema=schema)
+    return response(400, response_metadata)
 
 
 def not_found(identifier: Union[str, int]) -> Response:
@@ -120,7 +143,8 @@ def not_found(identifier: Union[str, int]) -> Response:
     This value will be used in the body message description.
     :return: Not found response
     """
-    return response(404, not_found_metadata(identifier))
+    response_metadata = not_found_metadata(identifier)
+    return response(404, response_metadata)
 
 
 def internal_error() -> Response:
@@ -132,8 +156,8 @@ def internal_error() -> Response:
 
 def response(status_code: int,
              meta: MetaData,
-             data: Optional[Union[object, str]] = None,
-             headers: Optional[dict] = None) -> Response:
+             data: Dict[str, Any] = None,
+             headers: Optional[Dict[str, Any]] = None) -> Response:
     """
     Creates response instances from various information
 
