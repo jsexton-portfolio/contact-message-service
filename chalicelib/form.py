@@ -25,7 +25,7 @@ class FormValidationError(Exception):
 
 
 class SenderCreationForm(BaseModel):
-    alias: str = Field(..., min_length=1, max_length=50)
+    alias: str = Field(..., max_length=50)
     phone: Optional[str]
     email: EmailStr
 
