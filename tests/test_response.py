@@ -22,10 +22,13 @@ def test_ok_meta():
 
 
 def test_bad_message(schema):
-    error_details = [ErrorDetail(description='123', field_name='test_field')]
-    meta = bad_metadata(error_details, schema)
+    error_details = [
+        ErrorDetail(description='description'),
+        FieldErrorDetail(description='description', field_name='test_field')
+    ]
+    meta = bad_metadata(error_details=error_details, schema=schema)
     assert meta.message == 'Given inputs were incorrect. Consult the below details to address the issue.'
-    assert len(meta.error_details) == 1
+    assert len(meta.error_details) == 2
     assert 'requestBody' in meta.schemas.keys()
 
 
@@ -71,7 +74,10 @@ def test_created_response():
 
 
 def test_bad_response():
-    error_details = [ErrorDetail(description='123', field_name='test_field')]
+    error_details = [
+        ErrorDetail(description='description'),
+        FieldErrorDetail(description='description', field_name='test_field')
+    ]
     res = bad(error_details)
 
     body = jsonpickle.decode(res.body)
@@ -80,7 +86,7 @@ def test_bad_response():
     assert body['success'] is False
     assert body['meta'][
                'message'] == 'Given inputs were incorrect. Consult the below details to address the issue.'
-    assert len(body['meta']['errorDetails']) == 1
+    assert len(body['meta']['errorDetails']) == 2
     assert body['data'] is None
     assert res.headers == {}
 

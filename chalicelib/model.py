@@ -40,7 +40,7 @@ class Reader(Document):
     """
     id = StringField(required=True)
     flagged = BooleanField(default=False, required=True)
-    time_updated = DateTimeField(db_field='timeUpdated', default=datetime.utcnow(), required=True)
+    time_updated = DateTimeField(db_field='timeUpdated', default=datetime.utcnow, required=True)
 
     def __getstate__(self):
         return json.loads(self.to_json())
@@ -68,8 +68,8 @@ class ContactMessage(Document):
     responded = BooleanField(default=False, required=True)
     sender = EmbeddedDocumentField(document_type=Sender, required=True)
     readers = ListField(ReferenceField(Reader))
-    time_created = DateTimeField(db_field='timeCreated', default=datetime.utcnow(), required=True)
-    time_updated = DateTimeField(db_field='timeUpdated', default=datetime.utcnow(), required=True)
+    time_created = DateTimeField(db_field='timeCreated', default=datetime.utcnow, required=True)
+    time_updated = DateTimeField(db_field='timeUpdated', default=datetime.utcnow, required=True)
 
     def __getstate__(self):
         return json.loads(self.to_json(follow_reference=True))

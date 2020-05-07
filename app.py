@@ -24,7 +24,7 @@ def create_contact_message():
 
     :return: The created response with created resource information
     """
-    form = resolve_form(app.current_request.json_body, ContactMessageCreationForm)
+    form = resolve_form(app.current_request.raw_body, ContactMessageCreationForm)
     identity = app.current_request.context['identity']
     contact_message = contact_message_service.create_with_identity(form, identity)
 
