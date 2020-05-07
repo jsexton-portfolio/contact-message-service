@@ -24,10 +24,10 @@ def _is_camel_case(string: str) -> bool:
 
     1. First series of characters should be lower case
     2. Every character group afterwards should string with an upper case character followed by lower case.
-    3. The last character is allowed to be upper case
+    3. The last character is allowed to be upper case lower case or a number
 
     :param string: The string value to check if camel cased
     :return: Whether the given string was camel cased or not
     """
-    pattern = r'[a-z]+((\d)|([A-Z0-9][a-z0-9]+))*([A-Z])?'
+    pattern = re.compile(r'[a-z]([A-Z0-9]*[a-z][a-z0-9]*[A-Z]|[a-z0-9]*[A-Z][A-Z0-9]*[a-z])[A-Za-z0-9]*')
     return re.match(pattern=pattern, string=string) is not None
