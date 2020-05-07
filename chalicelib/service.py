@@ -6,18 +6,21 @@ from chalicelib.form import ContactMessageCreationForm
 from chalicelib.model import ContactMessage
 
 
-class ResourceNotFoundError(Exception):
+class ServiceError(Exception):
+    """
+    Any error that may be raised from a service
+    """
+    pass
+
+
+class ResourceNotFoundError(ServiceError):
     """
     Error raised when a resource could not be found with a particular identifier.
     """
 
     def __init__(self, identifier: str, message: str = None):
-        if message is None:
-            message = f'Resource with id {identifier} could not be found'
-
         self.identifier = identifier
-        self.message = message
-        super().__init__(self.message)
+        self.message = message or f'Resource with id {identifier} could not be found'
 
 
 # Type representing the document the resource service interfaces with
