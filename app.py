@@ -1,8 +1,7 @@
-import os
-
 from chalice import Chalice
 from mongoengine import connect
 
+from chalicelib import config
 from chalicelib.error import error_handler
 from chalicelib.form import resolve_form, ContactMessageCreationForm
 from chalicelib.response import created
@@ -10,8 +9,8 @@ from chalicelib.service import ContactMessageService
 
 app = Chalice(app_name='contact-message-service')
 
-connection_string = os.getenv('CONNECTION_STRING')
-connect(connection_string)
+connection_string = config.connection_string()
+connect(host=connection_string or '')
 
 contact_message_service = ContactMessageService()
 

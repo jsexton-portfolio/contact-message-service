@@ -3,9 +3,12 @@
   "app_name": "contact-message-service",
   "stages": {
     "dev": {
+      "api_gateway_stage": "api"
+    },
+    "prod": {
       "api_gateway_stage": "api",
       "environment_variables": {
-        "CONNECTIONS_STRING": "local"
+        "CONNECTION_STRING": "AQICAHh3MxHByFG+7QMBxtf48iY0KLAY1fvzlFuJiUZ8iTbkMAHFc4AiabnNFF428bNOV91uAAAAzjCBywYJKoZIhvcNAQcGoIG9MIG6AgEAMIG0BgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDP3W2w9auqA2lzJh4gIBEICBhk3P6p1VN/4LIYlkhDl118h8TBet8IbTFIV1QVikLr1YehVE6OzqZnkzisIRZkJFzy7W6jVTM4WtxELfij8tmb6aAOuTcM/dFDYH0tNbuFuDCN5sQgdYbA16K9l+MejTCZZaJTAeVnGP1P++/i6SujXeA7kXDDeNFgrl+XzkmhjerX67wJmM"
       }
     }
   }
