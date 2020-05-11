@@ -1,3 +1,8 @@
+# 0.2.0
+
+- Added ability to configure encrypted environment variables
+- Service now connects to production data store
+
 # 0.1.2-alpha
 
 - Message max length is now 2000
