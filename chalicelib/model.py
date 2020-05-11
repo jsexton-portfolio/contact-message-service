@@ -3,8 +3,13 @@ from datetime import datetime
 from enum import Enum
 from typing import Sequence
 
-from mongoengine import StringField, BooleanField, EmbeddedDocumentField, DateTimeField, EmailField, \
-    ListField, ReferenceField
+from mongoengine import BooleanField
+from mongoengine import DateTimeField
+from mongoengine import EmailField
+from mongoengine import EmbeddedDocumentField
+from mongoengine import ListField
+from mongoengine import ReferenceField
+from mongoengine import StringField
 from mongoengine_goodjson import Document, EmbeddedDocument
 
 from chalicelib.helper import CamelCaseAttributesMixin
