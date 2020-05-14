@@ -14,6 +14,15 @@ class ErrorDetail(CamelCaseAttributesMixin):
     def __init__(self, description: str):
         self.description = description
 
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, ErrorDetail) and other.description == self.description
+
+    def __ne__(self, other: object) -> bool:
+        return not self == other
+
+    def __repr__(self):
+        return f'ErrorDetail(description={self.description})'
+
 
 class FieldErrorDetail(ErrorDetail):
     """
@@ -23,6 +32,15 @@ class FieldErrorDetail(ErrorDetail):
     def __init__(self, description: str, field_name: str):
         super().__init__(description)
         self.field_name = field_name
+
+    def __eq__(self, other: object) -> bool:
+        return super().__eq__(other) and isinstance(other, FieldErrorDetail) and other.field_name == self.field_name
+
+    def __ne__(self, other: object) -> bool:
+        return not self == other
+
+    def __repr__(self):
+        return f'FieldErrorDetail(description={self.description}, field_name={self.field_name})'
 
 
 class MetaData(CamelCaseAttributesMixin):
@@ -37,6 +55,18 @@ class MetaData(CamelCaseAttributesMixin):
         self.message = message
         self.error_details = error_details or []
         self.schemas = schemas or {}
+
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, MetaData) and \
+               other.message == self.message and \
+               other.schemas == self.schemas and \
+               other.error_details == self.error_details
+
+    def __ne__(self, other: object) -> bool:
+        return not self == other
+
+    def __repr__(self):
+        return f'MetaData(message=\'{self.message}\', error_details={self.error_details}, schemas={self.schemas})'
 
 
 class ResponseBody:
