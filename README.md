@@ -1,6 +1,8 @@
 # Contact Message Service
 Service used to interface with portfolio application contact messages
 
+![](https://github.com/jsexton-portfolio/contact-message-service/workflows/build/badge.svg)
+
 ## Endpoints
 
 #### POST /mail
