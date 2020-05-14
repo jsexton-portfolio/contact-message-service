@@ -79,7 +79,7 @@ class KeyManagementService:
         """
         Encrypts given plaintext with specified key identifier.
 
-        :param plaintext: The plaintext to encrpyt
+        :param plaintext: The plaintext to encrypt
         :param key_id: The key identifier to use when encrypting the given plaintext
         :return: The kms encryption response
         """

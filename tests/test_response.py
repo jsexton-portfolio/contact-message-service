@@ -15,10 +15,12 @@ def schema():
 
 
 def test_ok_meta():
-    meta = ok_metadata()
-    assert meta.message == 'Request completed successfully'
-    assert len(meta.error_details) == 0
-    assert len(meta.schemas) == 0
+    actual_meta = ok_metadata()
+    expected_meta = MetaData(
+        message='Request completed successfully'
+    )
+
+    assert actual_meta == expected_meta
 
 
 def test_bad_message(schema):
@@ -26,36 +28,52 @@ def test_bad_message(schema):
         ErrorDetail(description='description'),
         FieldErrorDetail(description='description', field_name='test_field')
     ]
-    meta = bad_metadata(error_details=error_details, schema=schema)
-    assert meta.message == 'Given inputs were incorrect. Consult the below details to address the issue.'
-    assert len(meta.error_details) == 2
-    assert 'requestBody' in meta.schemas.keys()
+    actual_meta = bad_metadata(error_details=error_details, schema=schema)
+    expected_meta = MetaData(
+        message='Given inputs were incorrect. Consult the below details to address the issue.',
+        error_details=error_details,
+        schemas={'requestBody': schema}
+    )
+
+    assert actual_meta == expected_meta
 
 
 def test_not_found_message():
     identifier = '123'
-    meta = not_found_metadata(identifier)
-    assert meta.message == 'Resource with id 123 does not exist'
-    assert len(meta.error_details) == 0
+    actual_meta = not_found_metadata(identifier)
+    expected_meta = MetaData(
+        message='Resource with id 123 does not exist'
+    )
+
+    assert actual_meta == expected_meta
 
 
 def test_internal_error_message():
-    meta = internal_error_metadata()
-    assert meta.message == 'Request failed due to internal server error'
-    assert len(meta.error_details) == 0
+    actual_meta = internal_error_metadata()
+    expected_meta = MetaData(
+        message='Request failed due to internal server error'
+    )
+
+    assert actual_meta == expected_meta
 
 
 def test_ok_response():
     data = {'field_name': 'field_value'}
     res = ok(data)
 
-    body = jsonpickle.decode(res.body)
+    actual_body = jsonpickle.loads(res.body)
+    expected_body = {
+        'success': True,
+        'meta': {
+            'message': 'Request completed successfully',
+            'errorDetails': [],
+            'schemas': {}
+        },
+        'data': data
+    }
 
     assert res.status_code == 200
-    assert body['success'] is True
-    assert body['meta']['message'] == 'Request completed successfully'
-    assert len(body['meta']['errorDetails']) == 0
-    assert body['data'] == data
+    assert actual_body == expected_body
     assert res.headers == {}
 
 
@@ -63,13 +81,19 @@ def test_created_response():
     data = {'field_name': 'field_value'}
     res = created(data)
 
-    body = jsonpickle.decode(res.body)
+    actual_body = jsonpickle.loads(res.body)
+    expected_body = {
+        'success': True,
+        'meta': {
+            'message': 'Request completed successfully',
+            'errorDetails': [],
+            'schemas': {}
+        },
+        'data': data
+    }
 
     assert res.status_code == 201
-    assert body['success'] is True
-    assert body['meta']['message'] == 'Request completed successfully'
-    assert len(body['meta']['errorDetails']) == 0
-    assert body['data'] == data
+    assert actual_body == expected_body
     assert res.headers == {}
 
 
@@ -80,14 +104,29 @@ def test_bad_response():
     ]
     res = bad(error_details)
 
-    body = jsonpickle.decode(res.body)
+    actual_body = jsonpickle.loads(res.body)
+    expected_body = {
+        'success': False,
+        'meta': {
+            'message': 'Given inputs were incorrect. Consult the below details to address the issue.',
+            'errorDetails': [
+                {
+                    'description': 'description'
+                },
+                {
+                    'description': 'description',
+                    'fieldName': 'test_field'
+                }
+            ],
+            'schemas': {
+
+            }
+        },
+        'data': None
+    }
 
     assert res.status_code == 400
-    assert body['success'] is False
-    assert body['meta'][
-               'message'] == 'Given inputs were incorrect. Consult the below details to address the issue.'
-    assert len(body['meta']['errorDetails']) == 2
-    assert body['data'] is None
+    assert actual_body == expected_body
     assert res.headers == {}
 
 
@@ -95,24 +134,36 @@ def test_not_found_response():
     identifier = '123'
     res = not_found(identifier)
 
-    body = jsonpickle.decode(res.body)
+    actual_body = jsonpickle.loads(res.body)
+    expected_body = {
+        'success': False,
+        'meta': {
+            'message': 'Resource with id 123 does not exist',
+            'errorDetails': [],
+            'schemas': {}
+        },
+        'data': None
+    }
 
     assert res.status_code == 404
-    assert body['success'] is False
-    assert body['meta']['message'] == 'Resource with id 123 does not exist'
-    assert len(body['meta']['errorDetails']) == 0
-    assert body['data'] is None
+    assert actual_body == expected_body
     assert res.headers == {}
 
 
 def test_internal_error_response():
     res = internal_error()
 
-    body = jsonpickle.decode(res.body)
+    actual_body = jsonpickle.loads(res.body)
+    expected_body = {
+        'success': False,
+        'meta': {
+            'message': 'Request failed due to internal server error',
+            'errorDetails': [],
+            'schemas': {}
+        },
+        'data': None
+    }
 
     assert res.status_code == 500
-    assert body['success'] is False
-    assert body['meta']['message'] == 'Request failed due to internal server error'
-    assert len(body['meta']['errorDetails']) == 0
-    assert body['data'] is None
+    assert actual_body == expected_body
     assert res.headers == {}
