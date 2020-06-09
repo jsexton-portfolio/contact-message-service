@@ -1,3 +1,7 @@
+# v0.3.0
+
+- /mail route now uses CORS policy.
+
 # v0.2.0
 
 - Added ability to configure encrypted environment variables
