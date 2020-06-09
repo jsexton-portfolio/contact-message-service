@@ -15,7 +15,7 @@ connect(host=connection_string or '')
 contact_message_service = ContactMessageService()
 
 
-@app.route('/mail', methods=['POST'])
+@app.route('/mail', methods=['POST'], cors=True)
 @error_handler
 def create_contact_message():
     """
