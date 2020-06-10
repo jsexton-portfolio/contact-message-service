@@ -55,7 +55,7 @@ class ContactMessageService(ResourceService):
                              identity: Dict[str, Any]) -> ContactMessage:
         creation_form_dict = creation_form.dict()
 
-        # Fuckin hate this. Make create an object and map this identity dictionary to it?
+        # Hate this. Make create an object and map this identity dictionary to it?
         creation_form_dict['sender']['ip'] = identity.get('sourceIp', 'unknown')
         creation_form_dict['sender']['user_agent'] = identity.get('userAgent', 'unknown')
 

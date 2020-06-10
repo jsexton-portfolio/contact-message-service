@@ -1,7 +1,8 @@
 import json
+import re
 from typing import TypeVar, Type, Dict, Any, Optional, Sequence, Union
 
-from pydantic import BaseModel, Field, ValidationError, EmailStr, Extra
+from pydantic import BaseModel, Field, ValidationError, EmailStr, Extra, validator
 
 from chalicelib.model import Reason
 from chalicelib.response import ErrorDetail, FieldErrorDetail
@@ -10,6 +11,13 @@ from chalicelib.response import ErrorDetail, FieldErrorDetail
 class FormError(Exception):
     """
     Any error that may be raised while handling a form
+    """
+    pass
+
+
+class PhoneNumberNotValidError(ValueError):
+    """
+    Error used to denote that a phone number was invalid
     """
     pass
 
@@ -32,6 +40,23 @@ class SenderCreationForm(BaseModel):
     alias: str = Field(..., max_length=50)
     phone: Optional[str]
     email: EmailStr
+
+    @validator('phone', pre=True)
+    def validate_phone(cls, value: Optional[str]) -> Optional[str]:
+        # Allow empty string because phone is optional and to make consumers life easier by not needing to explicitly
+        # state that the phone number is null.
+        # Also allow whitespace because leading and trailing whitespace is stripped from strings.
+        if value.isspace() or value == '':
+            return None
+
+        # Verifies that a given string is a valid American phone number
+        digits = re.sub(r'\D', '', value)
+        valid = len(digits) == 10
+        if not valid:
+            raise PhoneNumberNotValidError('value is not a valid american phone number')
+
+        # Return only the phone number digits. We do not care about any other formatting
+        return digits
 
     class Config:
         anystr_strip_whitespace = True
