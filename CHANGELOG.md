@@ -3,6 +3,7 @@
 - Fixed bug that caused server to return 500 when given empty string for phone number
     - Given phone number now must be a valid American phone number
     - Formatting and non digit characters are ignored
+- Fixed bug that caused reasons to be case sensitive
 
 # v0.3.0
 

@@ -24,6 +24,12 @@ class Reason(Enum):
     FEEDBACK = 'feedback'
     OTHER = 'other'
 
+    @classmethod
+    def _missing_(cls, value):
+        for member in cls:
+            if member.name.lower() == value.lower():
+                return member
+
 
 class Sender(EmbeddedDocument):
     """
