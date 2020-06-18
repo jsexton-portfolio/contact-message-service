@@ -1,3 +1,13 @@
+# v0.4.0
+
+- Phone validation is now more strict. See below for example common allowed phone numbers
+    - 1234567890
+    - (123) 456-7890
+    - 123-456-7890
+    - 123 456 7890
+- Removed message length requirement. Message must be at least one character in length.
+- Alias now must be at least one character in length.
+
 # v0.3.1
 
 - Fixed bug that caused server to return 500 when given empty string for phone number
