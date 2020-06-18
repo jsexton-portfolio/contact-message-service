@@ -2,7 +2,8 @@ import json
 import re
 from typing import TypeVar, Type, Dict, Any, Optional, Sequence, Union
 
-from pydantic import BaseModel, Field, ValidationError, EmailStr, Extra, validator
+from pydantic import BaseModel, Field, ValidationError, EmailStr, Extra
+from pydantic.validators import str_validator
 
 from chalicelib.model import Reason
 from chalicelib.response import ErrorDetail, FieldErrorDetail
@@ -36,27 +37,35 @@ class FormValidationError(FormError):
         self.schema = schema
 
 
-class SenderCreationForm(BaseModel):
-    alias: str = Field(..., max_length=50)
-    phone: Optional[str]
-    email: EmailStr
+class PhoneStr(str):
+    """
+    Custom type for validating strings as phone numbers
+    """
 
-    @validator('phone', pre=True)
-    def validate_phone(cls, value: Optional[str]) -> Optional[str]:
-        # Allow empty string because phone is optional and to make consumers life easier by not needing to explicitly
-        # state that the phone number is null.
-        # Also allow whitespace because leading and trailing whitespace is stripped from strings.
-        if value.isspace() or value == '':
-            return None
+    @classmethod
+    def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
+        field_schema.update(type='string', format='phone')
 
-        # Verifies that a given string is a valid American phone number
-        digits = re.sub(r'\D', '', value)
-        valid = len(digits) == 10
+    @classmethod
+    def __get_validators__(cls):
+        yield str_validator
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, value: Union[str]) -> str:
+        # Verifies that a given string is a valid phone number
+        match = re.match(r'^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$', value)
+        valid = match is not None
         if not valid:
-            raise PhoneNumberNotValidError('value is not a valid american phone number')
+            raise PhoneNumberNotValidError('value is not a valid phone number')
 
-        # Return only the phone number digits. We do not care about any other formatting
-        return digits
+        return value
+
+
+class SenderCreationForm(BaseModel):
+    alias: str = Field(..., min_length=1, max_length=50)
+    phone: Optional[PhoneStr]
+    email: EmailStr
 
     class Config:
         anystr_strip_whitespace = True
@@ -64,7 +73,7 @@ class SenderCreationForm(BaseModel):
 
 
 class ContactMessageCreationForm(BaseModel):
-    message: str = Field(..., min_length=100, max_length=2000)
+    message: str = Field(..., min_length=1, max_length=2000)
     reason: Reason
     sender: SenderCreationForm
 
