@@ -1,3 +1,7 @@
+# v0.4.1
+
+- Fixed bug that caused system crash when given empty or null phone number
+
 # v0.4.0
 
 - Phone validation is now more strict. See below for example common allowed phone numbers
