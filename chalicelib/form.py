@@ -2,7 +2,7 @@ import json
 import re
 from typing import TypeVar, Type, Dict, Any, Optional, Sequence, Union
 
-from pydantic import BaseModel, Field, ValidationError, EmailStr, Extra
+from pydantic import BaseModel, Field, ValidationError, EmailStr, Extra, validator
 from pydantic.validators import str_validator
 
 from chalicelib.model import Reason
@@ -67,6 +67,16 @@ class SenderCreationForm(BaseModel):
     phone: Optional[PhoneStr]
     email: EmailStr
 
+    @validator('phone')
+    def clean_phone(cls, value: Optional[PhoneStr]) -> Optional[str]:
+        """
+        Continued validation after phone validation that cleans phone string.
+        This allows the string to be easily consumer throughout the application and we will only need to deal with
+        a single phone format.
+        """
+        is_null = value is None
+        return None if is_null else re.sub(r'\D', '', value)
+
     class Config:
         anystr_strip_whitespace = True
         extra = Extra.forbid
@@ -127,3 +137,7 @@ def _build_error_details(errors) -> Sequence[FieldErrorDetail]:
     :return: List of field error details built from given pydantic errors
     """
     return [FieldErrorDetail(field_name='.'.join(error['loc']), description=error['msg']) for error in errors]
+
+
+def _clean_phone_number(phone_number: str) -> str:
+    return re.sub(r'\D', '', phone_number)

@@ -1,6 +1,5 @@
 import base64
-import re
-from typing import TypeVar, Dict, Any
+from typing import Dict, Any, Type, TypeVar
 
 import boto3
 from mongoengine import Document
@@ -26,11 +25,21 @@ class ResourceNotFoundError(ServiceError):
         self.message = message or f'Resource with id {identifier} could not be found'
 
 
-# Type representing the document the resource service interfaces with
 T = TypeVar('T', bound=Document)
 
 
-class ContactMessageService:
+class ResourceService:
+    def __init__(self, document: Type[T]):
+        self.document = document
+
+    def create(self, creation_form: Dict[str, Any]):
+        return self.document(**creation_form).save()
+
+
+class ContactMessageService(ResourceService):
+    def __init__(self):
+        super().__init__(ContactMessage)
+
     def create_with_identity(self,
                              creation_form: ContactMessageCreationForm,
                              identity: Dict[str, Any]) -> ContactMessage:
@@ -43,15 +52,8 @@ class ContactMessageService:
         # Should create custom mongo engine field for enums in the future that do this conversion for us
         creation_form_dict['reason'] = creation_form_dict['reason'].value
 
-        # Normalize phone number to only digits
-        creation_form_dict['sender']['phone'] = self._clean_phone_number(creation_form_dict['sender']['phone'])
-
         # return self.document(**creation_form_dict).save()
-        return ContactMessage(**creation_form_dict).save()
-
-    @staticmethod
-    def _clean_phone_number(phone_number: str) -> str:
-        return re.sub(r'\D', '', phone_number)
+        return super().create(creation_form_dict)
 
 
 class KeyManagementService:

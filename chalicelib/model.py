@@ -35,8 +35,8 @@ class Sender(EmbeddedDocument):
     """
     Represents sender document in mongo
     """
-    alias = StringField(max_length=50, required=True)
-    phone = StringField(min_length=3, max_length=20)
+    alias = StringField(min_length=1, max_length=50, required=True)
+    phone = StringField(min_length=6, max_length=15)
     email = EmailField(required=True)
     ip = StringField(required=True)
     user_agent = StringField(db_field='userAgent', required=True)
@@ -73,7 +73,7 @@ class ContactMessage(Document):
     """
     Represents contact message document in mongo
     """
-    message = StringField(min_length=100, max_length=10000, required=True)
+    message = StringField(min_length=1, max_length=2000, required=True)
     reason = StringField(enum=Reason, required=True)
     archived = BooleanField(default=False, required=True)
     responded = BooleanField(default=False, required=True)
