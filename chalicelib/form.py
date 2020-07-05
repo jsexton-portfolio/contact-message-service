@@ -1,19 +1,12 @@
-import json
 import re
-from typing import TypeVar, Type, Dict, Any, Optional, Sequence, Union
+from typing import Dict, Any, Optional, Sequence, Union
 
-from pydantic import BaseModel, Field, ValidationError, EmailStr, Extra, validator
+from pydantic import BaseModel, Field, EmailStr, Extra, validator
 from pydantic.validators import str_validator
+from pyocle.error import FormError
+from pyocle.response import ErrorDetail
 
 from chalicelib.model import Reason
-from chalicelib.response import ErrorDetail, FieldErrorDetail
-
-
-class FormError(Exception):
-    """
-    Any error that may be raised while handling a form
-    """
-    pass
 
 
 class PhoneNumberNotValidError(ValueError):
@@ -62,6 +55,10 @@ class PhoneStr(str):
         return value
 
 
+def _clean_phone_number(phone_number: str) -> str:
+    return re.sub(r'\D', '', phone_number)
+
+
 class SenderCreationForm(BaseModel):
     alias: str = Field(..., min_length=1, max_length=50)
     phone: Optional[PhoneStr]
@@ -75,7 +72,7 @@ class SenderCreationForm(BaseModel):
         a single phone format.
         """
         is_null = value is None
-        return None if is_null else re.sub(r'\D', '', value)
+        return None if is_null else _clean_phone_number(value)
 
     class Config:
         anystr_strip_whitespace = True
@@ -90,54 +87,3 @@ class ContactMessageCreationForm(BaseModel):
     class Config:
         anystr_strip_whitespace = True
         extra = Extra.forbid
-
-
-T = TypeVar('T')
-SUPPORTED_FORM_TYPES = {
-    ContactMessageCreationForm,
-}
-
-
-def resolve_form(data: Union[str, bytes, Dict[str, Any]], form_type: Type[T]) -> T:
-    """
-    Resolves a form from given type and json in the form of a dict. Validates form against given json
-    and raises FormValidationError if form is invalid.
-
-    :param data: The json that will be used to build the form. This data can be given in
-     the form of string, bytes or dictionary.
-    :param form_type: The form type to resolve
-    :return: The resolved form
-    """
-
-    if form_type not in SUPPORTED_FORM_TYPES:
-        raise ValueError(f'Unsupported form type: {form_type.__name__}')
-
-    try:
-        if isinstance(data, (str, bytes)):
-            data = json.loads(data)
-
-        return form_type(**data)
-    except ValidationError as ex:
-        error_details = _build_error_details(ex.errors())
-        raise FormValidationError(error_details=error_details, schema=form_type.schema())
-    except (TypeError, ValueError) as ex:
-        error_details = [ErrorDetail(description='Request body either either did not exist or was not valid JSON.')]
-        raise FormValidationError(
-            message='Form could not be validated due to given json not existing or being valid',
-            error_details=error_details,
-            schema=form_type.schema()
-        ) from ex
-
-
-def _build_error_details(errors) -> Sequence[FieldErrorDetail]:
-    """
-    Creates list of field error details from given pydantic errors
-
-    :param errors: List of pydantic errors
-    :return: List of field error details built from given pydantic errors
-    """
-    return [FieldErrorDetail(field_name='.'.join(error['loc']), description=error['msg']) for error in errors]
-
-
-def _clean_phone_number(phone_number: str) -> str:
-    return re.sub(r'\D', '', phone_number)

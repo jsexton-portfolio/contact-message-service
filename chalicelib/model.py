@@ -12,7 +12,7 @@ from mongoengine import ReferenceField
 from mongoengine import StringField
 from mongoengine_goodjson import Document, EmbeddedDocument
 
-from chalicelib.helper import CamelCaseAttributesMixin
+from pyocle.serialization import CamelCaseAttributesMixin
 
 
 class Reason(Enum):

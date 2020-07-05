@@ -1,10 +1,11 @@
 from chalice import Chalice
 from mongoengine import connect
+from pyocle import config
+from pyocle.error import error_handler
+from pyocle.form import resolve_form
+from pyocle.response import created
 
-from chalicelib import config
-from chalicelib.error import error_handler
-from chalicelib.form import resolve_form, ContactMessageCreationForm
-from chalicelib.response import created
+from chalicelib.form import ContactMessageCreationForm
 from chalicelib.service import ContactMessageService
 
 app = Chalice(app_name='contact-message-service')

@@ -1,3 +1,7 @@
+# v0.4.2
+
+- Integrated with new portfolio chalice common library (pyocle)
+
 # v0.4.1
 
 - Fixed bug that caused system crash when given empty or null phone number
