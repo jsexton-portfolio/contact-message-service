@@ -2,9 +2,10 @@ import copy
 from typing import Dict, Any
 
 import pytest
+from pyocle.error import FormValidationError
 from pyocle.form import resolve_form
 
-from chalicelib.form import ContactMessageCreationForm, FormValidationError, _clean_phone_number
+from chalicelib.form import ContactMessageCreationForm, _clean_phone_number
 
 
 @pytest.fixture
@@ -21,8 +22,7 @@ def sender_creation_form() -> Dict[str, Any]:
 @pytest.fixture
 def contact_creation_form(sender_creation_form) -> Dict[str, Any]:
     valid_form = {
-        'message': 'This is a test message that only need to be longer than 50 characters long.'
-                   ' Lets make this just a bit longer so that the database does not complain to us.',
+        'message': 'message',
         'reason': 'business',
         'sender': sender_creation_form
     }
@@ -62,19 +62,13 @@ def empty_message_form(contact_creation_form):
 
 @pytest.fixture
 def empty_sender_alias_form(contact_creation_form):
-    contact_creation_form['alias'] = ''
+    contact_creation_form['sender']['alias'] = ''
     return contact_creation_form
 
 
 @pytest.fixture
 def empty_sender_phone_form(contact_creation_form):
-    contact_creation_form['phone'] = ''
-    return contact_creation_form
-
-
-@pytest.fixture
-def null_sender_phone_form(contact_creation_form):
-    contact_creation_form['phone'] = None
+    contact_creation_form['sender']['phone'] = ''
     return contact_creation_form
 
 
@@ -95,7 +89,6 @@ def get_fixture(request):
     pytest.param('empty_message_form', 1),
     pytest.param('empty_sender_alias_form', 1),
     pytest.param('empty_sender_phone_form', 1),
-    pytest.param('null_sender_phone_form', 1),
 ])
 def test_resolve_form_when_form_is_invalid(get_fixture, fixture_name, error_count):
     form = get_fixture(fixture_name)

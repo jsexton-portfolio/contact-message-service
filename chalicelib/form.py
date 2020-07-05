@@ -1,10 +1,8 @@
 import re
-from typing import Dict, Any, Optional, Sequence, Union
+from typing import Dict, Any, Optional, Union
 
 from pydantic import BaseModel, Field, EmailStr, Extra, validator
 from pydantic.validators import str_validator
-from pyocle.error import FormError
-from pyocle.response import ErrorDetail
 
 from chalicelib.model import Reason
 
@@ -14,20 +12,6 @@ class PhoneNumberNotValidError(ValueError):
     Error used to denote that a phone number was invalid
     """
     pass
-
-
-class FormValidationError(FormError):
-    """
-    Error raised when an incoming request form is invalid
-    """
-
-    def __init__(self,
-                 error_details: Optional[Sequence[ErrorDetail]] = None,
-                 message: str = None,
-                 schema: Dict[str, Any] = None):
-        self.error_details = error_details or []
-        self.message = message or 'Form was not validated successfully'
-        self.schema = schema
 
 
 class PhoneStr(str):
