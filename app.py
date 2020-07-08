@@ -7,8 +7,8 @@ from chalicelib.service import ContactMessageService
 
 app = Chalice(app_name='contact-message-service')
 
-connection_string = pyocle.config.connection_string()
-connect(host=connection_string or '')
+connection_string = pyocle.config.connection_string(default='')
+connect(host=connection_string)
 
 contact_message_service = ContactMessageService()
 
