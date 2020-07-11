@@ -4,7 +4,7 @@ info:
   description: API used to interface with Justin Sexton's portfolio contact message data.
   version: 0.1.0
 servers:
-  - url: https://b623pa888e.execute-api.us-east-2.amazonaws.com/api/
+  - url: https://api.justinsexton.net/contact
 tags:
   - name: mail
     description: Contact messages
