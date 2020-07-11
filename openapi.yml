@@ -1,0 +1,540 @@
+openapi: 3.0.1
+info:
+  title: Justin Sexton Portfolio Mail Web API
+  description: API used to interface with Justin Sexton's portfolio contact message data.
+  version: 0.1.0
+servers:
+  - url: https://b623pa888e.execute-api.us-east-2.amazonaws.com/api/
+tags:
+  - name: mail
+    description: Contact messages
+paths:
+  /mail:
+    get:
+      tags:
+        - mail
+      summary: Retrieve all contact messages
+      operationId: getContactMessages
+      parameters:
+        - name: x-portfolio-version
+          in: header
+          description: Specifies version of API
+          schema:
+            type: string
+      responses:
+        200:
+          description: Contact messages were successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactMessagesResponse"
+        415:
+          description: Unsupported media type
+      security:
+        - BearerAuth: []
+
+    post:
+      tags:
+        - mail
+      summary: Creates a new contact message
+      operationId: addContactMessage
+      parameters:
+        - name: x-portfolio-version
+          in: header
+          description: Specifies version of API
+          schema:
+            type: string
+      requestBody:
+        description: Contact message object that will be sent
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactMessageCreationForm"
+        required: true
+      responses:
+        201:
+          description: New contact messages was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactMessageResponse"
+        400:
+          description: Invalid contact message request body
+
+  /mail/{id}:
+    get:
+      tags:
+        - mail
+      summary: Retrieve a single contact message from a given id
+      operationId: getContactMessageById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Contact message identifier in the form of a UUID
+          schema:
+            type: string
+        - name: x-portfolio-version
+          in: header
+          description: Specifies version of API
+          schema:
+            type: string
+      responses:
+        200:
+          description: Contact message was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactMessageResponse"
+        404:
+          description: Contact message not found
+      security:
+        - BearerAuth: []
+
+    patch:
+      tags:
+        - mail
+      summary: Updated an exsiting contact message
+      operationId: updateContactMessage
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Contact message identifier in the form of a UUID
+          schema:
+            type: string
+        - name: x-portfolio-version
+          in: header
+          description: Specifies version of API
+          schema:
+            type: string
+      requestBody:
+        description: The request body used to update an existing contact message
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactMessageUpdateForm"
+      responses:
+        200:
+          description: Contact message was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactMessageResponse"
+        404:
+          description: Contact message not found
+      security:
+        - BearerAuth: []
+
+  /mail/{id}/sender:
+    get:
+      tags:
+        - mail
+      summary: Retrieves a contact messages sender information
+      operationId: getContactMessageSenderById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Contact message identifier in the form of a UUID
+          schema:
+            type: string
+        - name: x-portfolio-version
+          in: header
+          description: Specifies version of API
+          schema:
+            type: string
+      responses:
+        200:
+          description: Contact message sender was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SenderResponse"
+        404:
+          description: Contact message not found
+      security:
+        - BearerAuth: []
+
+  /mail/{id}/readers:
+    get:
+      tags:
+        - mail
+      summary: Retrieves which users have read a contact message instance
+      operationId: getContactMessageReadersById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Contact message identifier in the form of a UUID
+          schema:
+            type: string
+        - name: x-portfolio-version
+          in: header
+          description: Specifies version of API
+          schema:
+            type: string
+      responses:
+        200:
+          description: Contact message readers were successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadersResponse"
+        404:
+          description: Contact message not found
+      security:
+        - BearerAuth: []
+
+    post:
+      tags:
+        - mail
+      summary: Add new reader instance to the specified contact message
+      operationId: addContactMessageReader
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Contact message identifier in the form of a UUID
+          schema:
+            type: string
+        - name: x-portfolio-version
+          in: header
+          description: Specifies version of API
+          schema:
+            type: string
+      requestBody:
+        description: The request body used to create a new reader instance
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReaderCreationForm"
+      responses:
+        201:
+          description: Reader successfully added to contact message reader list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReaderResponse"
+        404:
+          description: Contact message not found
+      security:
+        - BearerAuth: []
+
+  /mail/{mailId}/readers/{readerId}:
+    get:
+      tags:
+        - mail
+      summary: Retrieve an existing reader instance attached under a specified contact message
+      operationId: getContactMessageReaderById
+      parameters:
+        - name: mailId
+          in: path
+          required: true
+          description: Contact message identifier in the form of a UUID
+          schema:
+            type: string
+        - name: readerId
+          in: path
+          required: true
+          description: Reader identifier in the form of a UUID
+          schema:
+            type: string
+        - name: x-portfolio-version
+          in: header
+          description: Specifies version of API
+          schema:
+            type: string
+      responses:
+        200:
+          description: Contact message reader was successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReaderResponse"
+        404:
+          description: Contact message or reader not found
+      security:
+        - BearerAuth: []
+
+    patch:
+      tags:
+        - mail
+      summary: Update an existing reader instance attached under a specified contact message
+      operationId: updateContactMessageReader
+      parameters:
+        - name: mailId
+          in: path
+          required: true
+          description: Contact message identifier in the form of a UUID
+          schema:
+            type: string
+        - name: readerId
+          in: path
+          required: true
+          description: Reader identifier in the form of a UUID
+          schema:
+            type: string
+        - name: x-portfolio-version
+          in: header
+          description: Specifies version of API
+          schema:
+            type: string
+      requestBody:
+        description: The request body used to update an existing reader instance
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReaderUpdateForm"
+      responses:
+        200:
+          description: Contact message reader was successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReaderUpdatedResponse"
+        404:
+          description: Contact message or reader not found
+      security:
+        - BearerAuth: []
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    ContactMessage:
+      description: Entity that represents a message sent by someone trying to reach out through the portfolio
+      type: object
+      properties:
+        id:
+          type: string
+        message:
+          type: string
+        reason:
+          type: string
+          enum:
+            - Business
+            - Question
+            - Feedback
+            - Other
+        responded:
+          type: boolean
+        archived:
+          type: boolean
+        sender:
+          $ref: "#/components/schemas/Sender"
+        readers:
+          $ref: "#/components/schemas/ReaderCollection"
+        timeCreated:
+          type: string
+        lastUpdated:
+          type: string
+
+    ContactMessageUpdateForm:
+      type: object
+      properties:
+        responded:
+          type: boolean
+        archived:
+          type: boolean
+
+    ContactMessages:
+      type: object
+      properties:
+        contactMessageCount:
+          type: integer
+        contactMessages:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactMessage"
+
+    ContactMessageCreationForm:
+      description: Form used to create new contact messages
+      type: object
+      required:
+        - sender
+        - reason
+        - message
+      properties:
+        sender:
+          $ref: "#/components/schemas/SenderProperties"
+        reason:
+          type: string
+          enum:
+            - Business
+            - Question
+            - Other
+        message:
+          type: string
+
+    ContactMessageResponse:
+      description: Response that contains a single contact message
+      type: object
+      properties:
+        success:
+          type: boolean
+        meta:
+          $ref: "#/components/schemas/Meta"
+        data:
+          $ref: "#/components/schemas/ContactMessage"
+
+    ContactMessagesResponse:
+      description: Response that contains multiple contact messages
+      type: object
+      properties:
+        success:
+          type: boolean
+        meta:
+          $ref: "#/components/schemas/Meta"
+        data:
+          $ref: "#/components/schemas/ContactMessages"
+
+    ErrorDetail:
+      description: Describes in detail what went wrong when attempting to process a request
+      type: object
+      properties:
+        fieldName:
+          type: string
+        description:
+          type: string
+
+    Meta:
+      description: Contains meta information about the response
+      type: object
+      properties:
+        message:
+          type: string
+        errorDetails:
+          type: array
+          items:
+            $ref: "#/components/schemas/ErrorDetail"
+        schemas:
+          description: Contains details about the response detail. This object is dynamic and depends on the given scenario
+          type: object
+
+    Reader:
+      description: Denotes a user that has read the message and when.
+      type: object
+      properties:
+        id:
+          description: Identifer identifying the user that read the message
+          type: string
+        flagged:
+          type: boolean
+        lastReadTime:
+          description: Time user last read this message
+          type: string
+
+    ReaderCollection:
+      description: Details involve the read status of a message instance
+      type: object
+      properties:
+        flaggedByAny:
+          description: Property denoting if any of the readers have flagged the contact message
+          type: boolean
+        flaggedByYou:
+          description: Property denoting if any of the reader ids match with the authorized requester
+          type: boolean
+        readByAny:
+          type: boolean
+        readByYou:
+          type: boolean
+        readerCount:
+          type: integer
+        readerList:
+          type: array
+          items:
+            $ref: "#/components/schemas/Reader"
+
+    ReaderCreationForm:
+      description: Form used to create to reader instance
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+        flagged:
+          type: boolean
+          default: false
+
+    ReaderResponse:
+      description: Response that contains a retrieved reader from a specified contact message
+      type: object
+      properties:
+        success:
+          type: boolean
+        meta:
+          $ref: "#/components/schemas/Meta"
+        data:
+          $ref: "#/components/schemas/Reader"
+
+    ReadersResponse:
+      description: Response that contains a contact message's reader instances
+      type: object
+      properties:
+        success:
+          type: boolean
+        meta:
+          $ref: "#/components/schemas/Meta"
+        data:
+          $ref: "#/components/schemas/ReaderCollection"
+
+    ReaderUpdateForm:
+      description: Form used to update a reader instance
+      type: object
+      properties:
+        flagged:
+          type: boolean
+        markRead:
+          description: Used to mark that a reader last read time should be updated to whenever the server recieves this request
+          default: false
+          type: boolean
+
+    ReaderUpdatedResponse:
+      description: Response that contains the result of updating a specific reader instance
+      type: object
+      properties:
+        success:
+          type: boolean
+        meta:
+          $ref: "#/components/schemas/Meta"
+        data:
+          $ref: "#/components/schemas/Reader"
+
+    Sender:
+      description: Details involving who is sending a contact message
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/SenderProperties"
+
+      example:
+        {
+          "alias": "string",
+          "email": "string",
+          "phone": "string",
+        }
+
+    SenderProperties:
+      type: object
+      properties:
+        alias:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+
+    SenderResponse:
+      description: Response that contains a contact message's sender instance
+      type: object
+      properties:
+        success:
+          type: boolean
+        meta:
+          $ref: "#/components/schemas/Meta"
+        data:
+          $ref: "#/components/schemas/Sender"
