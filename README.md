@@ -4,6 +4,7 @@
 Service used to interface with portfolio application contact messages
 
 ## Endpoints
+Base path: https://api.justinsexton.net/contact
 
 #### POST /mail
 
