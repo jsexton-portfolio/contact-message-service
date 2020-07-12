@@ -71,3 +71,9 @@ class ContactMessageCreationForm(BaseModel):
     class Config:
         anystr_strip_whitespace = True
         extra = Extra.forbid
+
+
+class ContactMessageQuery(BaseModel):
+    reason: Optional[str] = None
+    archived: Optional[bool] = None
+    responded: Optional[bool] = None

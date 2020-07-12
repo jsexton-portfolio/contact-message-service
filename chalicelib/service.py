@@ -1,6 +1,8 @@
-from typing import Dict, Any, Type, TypeVar
+from typing import Dict, Any, Type, TypeVar, List
 
-from mongoengine import Document
+from bson import ObjectId
+from mongoengine import Document, DoesNotExist
+from pyocle.error import ResourceNotFoundError
 
 from chalicelib.form import ContactMessageCreationForm
 from chalicelib.model import ContactMessage
@@ -16,8 +18,23 @@ class ResourceService:
     def __init__(self, document: Type[T]):
         self.document = document
 
-    def create(self, creation_form: Dict[str, Any]):
+    def create(self, creation_form: Dict[str, Any]) -> T:
         return self.document(**creation_form).save()
+
+    def find(self, **kwargs) -> List[T]:
+        return [document for document in self.document.objects(**kwargs)]
+
+    def find_one(self, identifier: str) -> T:
+        """
+        Acts as a wrapper function around Document.objects.get.
+        """
+        if not ObjectId.is_valid(identifier):
+            raise ResourceNotFoundError(identifier)
+
+        try:
+            return self.document.objects.get(id=identifier)
+        except DoesNotExist:
+            raise ResourceNotFoundError(identifier)
 
 
 class ContactMessageService(ResourceService):

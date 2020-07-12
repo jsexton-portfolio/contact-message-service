@@ -1,3 +1,8 @@
+# v0.5.0
+- Added `GET /mail` endpoint
+    - Query parameters: archived, responded, reason
+- Added `GET /mail/{id}` endpoint
+
 # v0.4.2
 
 - Integrated with new portfolio chalice common library (pyocle)
