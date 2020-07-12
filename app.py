@@ -1,6 +1,6 @@
+import pyocle
 from chalice import Chalice
 from mongoengine import connect
-import pyocle
 
 from chalicelib.form import ContactMessageCreationForm
 from chalicelib.service import ContactMessageService
