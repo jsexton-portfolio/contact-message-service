@@ -1,6 +1,7 @@
 # v0.4.2
 
 - Integrated with new portfolio chalice common library (pyocle)
+- Connection string is now encrypted with new key id
 
 # v0.4.1
 
