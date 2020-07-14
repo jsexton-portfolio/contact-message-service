@@ -125,6 +125,67 @@ Base path: https://api.justinsexton.net/contact
 }
 ```
 
-## Docs
+#### GET /mail
+```json
+{
+    "success": true,
+    "meta": {
+        "message": "Request completed successfully",
+        "errorDetails": [],
+        "schemas": {}
+    },
+    "data": {
+        "count": 1,
+        "contactMessages": [
+            {
+                "id": "5efc16bba9786d36ff48ff18",
+                "message": "message",
+                "reason": "reason",
+                "archived": false,
+                "responded": false,
+                "sender": {
+                    "alias": "alias",
+                    "phone": "phone",
+                    "email": "email",
+                    "ip": "ip",
+                    "userAgent": "userAgent"
+                },
+                "readers": [],
+                "timeCreated": "2020-06-19T01:36:58.248000",
+                "timeUpdated": "2020-06-19T01:36:58.248000"
+            }
+        ]
+    }
+}
+```
 
-https://github.com/jsexton-portfolio/portfolio-documentation/tree/master/web-api
+
+#### GET /mail/{id}
+
+```json
+{
+    "success": true,
+    "meta": {
+        "message": "Request completed successfully",
+        "errorDetails": [],
+        "schemas": {}
+    },
+    "data": {
+        "id": "5efc16bba9786d36ff48ff18",
+        "message": "message",
+        "reason": "reason",
+        "archived": false,
+        "responded": false,
+        "sender": {
+            "alias": "alias",
+            "phone": "phone",
+            "email": "email",
+            "ip": "ip",
+            "userAgent": "userAgent"
+        },
+        "readers": [],
+        "timeCreated": "2020-06-19T01:36:58.248000",
+        "timeUpdated": "2020-06-19T01:36:58.248000"
+    }
+}
+```
