@@ -16,7 +16,11 @@ class PhoneNumberNotValidError(ValueError):
 
 class PhoneStr(str):
     """
-    Custom type for validating strings as phone numbers
+    Custom type for validating strings as phone numbers with pydantic BaseModels
+
+    Ex.
+    class Model(BaseModel):
+        phone_number: PhoneStr
     """
 
     @classmethod
@@ -40,10 +44,20 @@ class PhoneStr(str):
 
 
 def _clean_phone_number(phone_number: str) -> str:
+    """
+    Utility method used to strip a string of all characters except for digits.
+
+    :param phone_number: The phone number string to clean
+    :return: The cleaned phone number string
+    """
     return re.sub(r'\D', '', phone_number)
 
 
 class SenderCreationForm(BaseModel):
+    """
+    Form representing details needed to create a new contact message sender.
+    Intended to be used very closely with ContactMessageCreationForm.
+    """
     alias: str = Field(..., min_length=1, max_length=50)
     phone: Optional[PhoneStr]
     email: EmailStr
@@ -67,6 +81,9 @@ class SenderCreationForm(BaseModel):
 
 
 class ContactMessageCreationForm(BaseModel):
+    """
+    Form representing details need to create a new contact message.
+    """
     message: str = Field(..., min_length=1, max_length=2000)
     reason: Reason
     sender: SenderCreationForm
@@ -77,6 +94,9 @@ class ContactMessageCreationForm(BaseModel):
 
 
 class ContactMessageQuery(BaseModel):
+    """
+    Query parameters that can be used when requesting a list of contact messages
+    """
     reason: Optional[str] = None
     archived: Optional[bool] = None
     responded: Optional[bool] = None
