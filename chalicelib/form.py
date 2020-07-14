@@ -54,6 +54,9 @@ class SenderCreationForm(BaseModel):
         Continued validation after phone validation that cleans phone string.
         This allows the string to be easily consumer throughout the application and we will only need to deal with
         a single phone format.
+
+        :param value: The phone number string to clean
+        :return: The cleaned phone number. None if no phone number was given
         """
         is_null = value is None
         return None if is_null else _clean_phone_number(value)

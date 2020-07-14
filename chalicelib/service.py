@@ -26,7 +26,11 @@ class ResourceService:
 
     def find_one(self, identifier: str) -> T:
         """
-        Acts as a wrapper function around Document.objects.get.
+        Selects a single resource with given identifier. Raises ResourceNotFoundError if no resource existed
+        with the given identifier.
+
+        :param identifier: The identifier that will be used to select the specific resource
+        :return: The selected resource
         """
         if not ObjectId.is_valid(identifier):
             raise ResourceNotFoundError(identifier)
