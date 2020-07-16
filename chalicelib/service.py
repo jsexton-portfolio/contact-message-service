@@ -1,8 +1,8 @@
 from typing import Dict, Any, Type, TypeVar, List
 
 from bson import ObjectId
-from mongoengine import Document, DoesNotExist
-from pyocle.error import ResourceNotFoundError
+from mongoengine import Document, DoesNotExist, QuerySet
+from pyocle.service import ResourceNotFoundError
 
 from chalicelib.form import ContactMessageCreationForm
 from chalicelib.model import ContactMessage
@@ -22,7 +22,11 @@ class ResourceService:
         return self.document(**creation_form).save()
 
     def find(self, **kwargs) -> List[T]:
-        return [document for document in self.document.objects(**kwargs)]
+        return self._collect_to_list(self.document.objects(**kwargs))
+
+    def find_paginated(self, page: int, limit: int, **kwargs) -> List[T]:
+        offset = page * limit
+        return self._collect_to_list(self.document.objects(**kwargs).skip(offset).limit(limit))
 
     def find_one(self, identifier: str) -> T:
         """
@@ -39,6 +43,9 @@ class ResourceService:
             return self.document.objects.get(id=identifier)
         except DoesNotExist:
             raise ResourceNotFoundError(identifier)
+
+    def _collect_to_list(self, query_set: QuerySet) -> List[T]:
+        return [document for document in query_set]
 
 
 class ContactMessageService(ResourceService):

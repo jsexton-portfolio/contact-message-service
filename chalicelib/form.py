@@ -3,6 +3,7 @@ from typing import Dict, Any, Optional, Union
 
 from pydantic import BaseModel, Field, EmailStr, Extra, validator
 from pydantic.validators import str_validator
+from pyocle.form import PaginationQueryParameters
 
 from chalicelib.model import Reason
 
@@ -93,7 +94,7 @@ class ContactMessageCreationForm(BaseModel):
         extra = Extra.forbid
 
 
-class ContactMessageQuery(BaseModel):
+class ContactMessageQueryParameters(PaginationQueryParameters):
     """
     Query parameters that can be used when requesting a list of contact messages
     """

@@ -1,3 +1,8 @@
+# v0.5.1
+- Added query parameters to `GET /mail`
+- Added pagination tp `GET /mail`
+- Migrated with `pyocle 0.3.2`
+
 # v0.5.0
 - Added `GET /mail` endpoint
     - Query parameters: archived, responded, reason
