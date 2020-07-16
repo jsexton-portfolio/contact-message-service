@@ -2,8 +2,7 @@ import copy
 from typing import Dict, Any
 
 import pytest
-from pyocle.error import FormValidationError
-from pyocle.form import resolve_form
+from pyocle.form import resolve_form, FormValidationError
 
 from chalicelib.form import ContactMessageCreationForm, _clean_phone_number
 
@@ -98,7 +97,7 @@ def test_resolve_form_when_form_is_invalid(get_fixture, fixture_name, error_coun
 
     exception = exception_info.value
     assert exception.message == 'Form was not validated successfully'
-    assert len(exception.error_details) == error_count
+    assert len(exception.errors) == error_count
 
 
 @pytest.mark.parametrize('phone,expected', [
