@@ -1,3 +1,9 @@
+# v0.6.0
+- `POST /mail` endpoint now publishes contact created message in sns
+- Added sns listeners that subscribes to contact message created topic 
+    - Inserts new contact message into database
+    - Sends email with contact message information
+
 # v0.5.1
 - Added query parameters to `GET /mail`
 - Added pagination tp `GET /mail`

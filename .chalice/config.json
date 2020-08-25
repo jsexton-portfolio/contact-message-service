@@ -1,12 +1,22 @@
 {
   "version": "2.0",
   "app_name": "contact-message-service",
+  "lambda_functions": {
+    "send_email_on_received": {
+      "lambda_timeout": 30
+    },
+    "insert_into_database_on_received": {
+      "lambda_timeout": 30
+    }
+  },
   "stages": {
     "dev": {
       "api_gateway_stage": "api"
     },
     "prod": {
       "api_gateway_stage": "api",
+      "manage_iam_role": false,
+      "iam_role_arn": "arn:aws:iam::811393626934:role/contact-message-service-prod",
       "environment_variables": {
         "CONNECTION_STRING": "AQICAHguh7hq4XWINv4pK0oXt59Izrn+V2QkvsdgWXAZRHqHxgFGx7fsVXoVDWF9N+0y+0hIAAAAzjCBywYJKoZIhvcNAQcGoIG9MIG6AgEAMIG0BgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDGIWErfhWpvNHEF5xwIBEICBhjNyD1TwIHwhMbhVMr6i5Q69aoGkfo5RTQI5n+CsbnZj3wDzx0eoE37oENBn2KLuq0WNPltEE/aZciok2pw/TIG9R9lTWZP+HATX+86qSE8aKSdPvW9Myiph/nujyQB5MVIERtKD0yvjUCqoswK9YMyPeICP9O6HVh2UaGix5Wy9uBj1pyHh"
       }
