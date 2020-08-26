@@ -26,26 +26,14 @@ Base path: https://api.justinsexton.net/contact
 {
     "success": true,
     "meta": {
-        "message": "Request completed successfully",
+        "message": "string",
         "errorDetails": [],
+        "paginationDetails": {},
         "schemas": {}
     },
     "data": {
-        "id": "5ead033114fc83a68c56eb9d",
-        "message": "This is a test message that only needed to be longer than 100 characters long. Lets make this just a bit longer so that the database does not complain to us.",
-        "reason": "question",
-        "archived": false,
-        "responded": false,
-        "sender": {
-            "alias": "Person",
-            "phone": "1234567890",
-            "email": "person@gmail.com",
-            "ip": "127.0.0.1",
-            "userAgent": "unknown"
-        },
-        "readers": [],
-        "timeCreated": "2020-05-02T05:20:47.603908",
-        "timeUpdated": "2020-05-02T05:20:47.603933"
+        "contactMessageId": "string",
+        "snsMessageId": "string"
     }
 }
 ```
@@ -62,6 +50,7 @@ Base path: https://api.justinsexton.net/contact
             "description": "(Description detailing why the field caused an issue)"
           }
         ],
+        "paginationDetails": {},
         "schemas": {
             "requestBody": {
                 "title": "ContactMessageCreationForm",
@@ -132,6 +121,7 @@ Base path: https://api.justinsexton.net/contact
     "meta": {
         "message": "Request completed successfully",
         "errorDetails": [],
+        "paginationDetails": {},
         "schemas": {}
     },
     "data": {
