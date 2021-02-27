@@ -1,9 +1,5 @@
 # v0.6.1
 - Bumped dependencies and cleaned requirements.txt
-    - boto3
-    - chalice
-    - email-validator
-    - pytest
 
 # v0.6.0
 - `POST /mail` endpoint now publishes contact created message in sns
