@@ -360,7 +360,7 @@ components:
         - message
       properties:
         sender:
-          $ref: "#/components/schemas/SenderProperties"
+          $ref: "#/components/schemas/SenderCreationForm"
         reason:
           type: string
           enum:
@@ -411,15 +411,29 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ErrorDetail"
+        paginationDetails:
+          $ref: "#/components/schemas/PaginationDetails"
         schemas:
           description: Contains details about the response detail. This object is dynamic and depends on the given scenario
           type: object
+
+    PaginationDetails:
+      description: Meta data regarding pagination
+      type: object
+      properties:
+        page:
+          description: Value identifying which page was returned within the response
+          type: number
+        limit:
+          description: Value identifying how many elements are on the returned page
+          type: number
+
 
     Reader:
       description: Denotes a user that has read the message and when.
       type: object
       properties:
-        id:
+        userId:
           description: Identifer identifying the user that read the message
           type: string
         flagged:
@@ -453,9 +467,9 @@ components:
       description: Form used to create to reader instance
       type: object
       required:
-        - id
+        - userId
       properties:
-        id:
+        userId:
           type: string
         flagged:
           type: boolean
@@ -506,19 +520,22 @@ components:
           $ref: "#/components/schemas/Reader"
 
     Sender:
-      description: Details involving who is sending a contact message
+      description: Details involving who sent the contact message
       type: object
-      allOf:
-        - $ref: "#/components/schemas/SenderProperties"
+      properties:
+        alias:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        ip:
+          type: string
+        userAgent:
+          type: string
 
-      example:
-        {
-          "alias": "string",
-          "email": "string",
-          "phone": "string",
-        }
-
-    SenderProperties:
+    SenderCreationForm:
+      description: Details involving who is sending a contact message
       type: object
       properties:
         alias:
