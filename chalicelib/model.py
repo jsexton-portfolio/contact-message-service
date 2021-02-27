@@ -8,7 +8,6 @@ from mongoengine import DateTimeField
 from mongoengine import EmailField
 from mongoengine import EmbeddedDocumentField
 from mongoengine import ListField
-from mongoengine import ReferenceField
 from mongoengine import StringField
 from mongoengine_goodjson import Document, EmbeddedDocument
 from pyocle.serialization import CamelCaseAttributesMixin
