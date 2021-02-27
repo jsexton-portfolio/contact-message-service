@@ -39,7 +39,7 @@ def create_contact_message():
 @pyocle.response.error_handler
 def get_single_contact_message(identifier: str):
     """
-    Endpoint used to retrieve contact messages.
+    Endpoint used to retrieve a specific contact message
 
     :param identifier: The contact message id that will be used to find the specific contact message
     :return: The found contact message
@@ -53,7 +53,7 @@ def get_single_contact_message(identifier: str):
 @pyocle.response.error_handler
 def get_multiple_contact_message():
     """
-    Endpoint used to retrieve a specific contact message
+    Endpoint used to retrieve contact messages
 
     :return: The found contact messages
     """
@@ -67,8 +67,9 @@ def get_multiple_contact_message():
 @app.on_sns_message('contact-message-created')
 def send_email_on_received(event: SNSEvent):
     """
-    :param event:
-    :return:
+    Sends an email to Justin's dev email when triggered by sns
+
+    :param event: The sns event instance that triggered this function
     """
     form = TemplatedEmailForm(
         source='JS Portfolio <no-reply@justinsexton.net>',
@@ -87,8 +88,9 @@ def send_email_on_received(event: SNSEvent):
 @app.on_sns_message('contact-message-created')
 def insert_into_database_on_received(event: SNSEvent):
     """
-    :param event:
-    :return:
+    Creates a record in the contact message database when triggered by a sns event
+
+    :param event: The sns event instance that triggered this function
     """
     contact_message = cms.create_with_sns_event(event)
     app.log.info(f'Contact message created: {contact_message}')
