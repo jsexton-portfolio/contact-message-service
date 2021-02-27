@@ -11,7 +11,6 @@ from mongoengine import ListField
 from mongoengine import ReferenceField
 from mongoengine import StringField
 from mongoengine_goodjson import Document, EmbeddedDocument
-
 from pyocle.serialization import CamelCaseAttributesMixin
 
 
@@ -42,19 +41,21 @@ class Sender(EmbeddedDocument):
     user_agent = StringField(db_field='userAgent', required=True)
 
     def __getstate__(self):
-        return json.loads(self.to_json())
+        json_str = self.to_json()
+        return json.loads(json_str)
 
 
-class Reader(Document):
+class Reader(EmbeddedDocument):
     """
     Represents reader document in mongo
     """
-    id = StringField(required=True)
+    user_id = StringField(db_field='userId', required=True)
     flagged = BooleanField(default=False, required=True)
     time_updated = DateTimeField(db_field='timeUpdated', default=datetime.utcnow, required=True)
 
     def __getstate__(self):
-        return json.loads(self.to_json())
+        json_str = self.to_json()
+        return json.loads(json_str)
 
 
 class ReaderCollection(CamelCaseAttributesMixin):
@@ -78,12 +79,13 @@ class ContactMessage(Document):
     archived = BooleanField(default=False, required=True)
     responded = BooleanField(default=False, required=True)
     sender = EmbeddedDocumentField(document_type=Sender, required=True)
-    readers = ListField(ReferenceField(Reader))
+    readers = ListField(EmbeddedDocumentField(Reader))
     time_created = DateTimeField(db_field='timeCreated', default=datetime.utcnow, required=True)
     time_updated = DateTimeField(db_field='timeUpdated', default=datetime.utcnow, required=True)
 
     def __getstate__(self):
-        return json.loads(self.to_json(follow_reference=True))
+        json_str = self.to_json(follow_reference=True)
+        return json.loads(json_str)
 
 
 class ContactMessageCollection(CamelCaseAttributesMixin):
