@@ -3,7 +3,7 @@ from bson import ObjectId
 from chalicelib.service import ContactMessageFormPublished
 
 
-def contact_message_form_published_should_correctly_convert_id_to_string():
+def test_contact_message_form_published_should_correctly_convert_id_to_string():
     form = ContactMessageFormPublished(
         contact_message_id=ObjectId(),
         sns_message_id='sns message id'
