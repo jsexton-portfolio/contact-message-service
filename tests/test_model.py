@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from chalicelib.model import Reason, Sender, Reader, ContactMessage
+from chalicelib.model import Reason, Sender, Reader, ContactMessage, ReaderCollection
 
 
 @pytest.fixture
@@ -91,4 +91,46 @@ def test_contact_message_is_correctly_serialized(contact_message: ContactMessage
         },
         'timeUpdated': '2001-09-09T01:46:40',
         'timeCreated': '2001-09-09T01:46:40'
+    }
+
+
+def test_reader_collection_fields_are_calculated_correctly_without_user_id(reader: Reader):
+    readers = [reader]
+    collection = ReaderCollection(readers)
+
+    assert collection.__dict__ == {
+        'count': 1,
+        'read_by_any': True,
+        'flagged_by_any': True,
+        'read_by_you': None,
+        'flagged_by_you': None,
+        'reader_list': readers
+    }
+
+
+def test_reader_collection_fields_are_calculated_correctly_with_known_id(reader: Reader):
+    readers = [reader]
+    collection = ReaderCollection(readers, '123')
+
+    assert collection.__dict__ == {
+        'count': 1,
+        'read_by_any': True,
+        'flagged_by_any': True,
+        'read_by_you': True,
+        'flagged_by_you': True,
+        'reader_list': readers
+    }
+
+
+def test_reader_collection_fields_are_calculated_correctly_with_unknown_id(reader: Reader):
+    readers = [reader]
+    collection = ReaderCollection(readers, 'unknown id')
+
+    assert collection.__dict__ == {
+        'count': 1,
+        'read_by_any': True,
+        'flagged_by_any': True,
+        'read_by_you': False,
+        'flagged_by_you': False,
+        'reader_list': readers
     }

@@ -64,9 +64,22 @@ class ReaderCollection(CamelCaseAttributesMixin):
     Will be most commonly used in responses
     """
 
-    def __init__(self, readers: Sequence[Reader]):
+    def __init__(self, readers: Sequence[Reader], user_id: str = None):
+        self.flagged_by_any = any(reader.flagged for reader in readers)
+        self.read_by_any = len(readers) > 0
         self.count = len(readers)
         self.reader_list = readers
+
+        # If a user id is provided we can calculate some quick things around
+        # if that user has flagged or read any messages in the collection.
+        # The properties use 'you' because the assumption is made that whoever makes this request
+        # will have their ID passed in most of the time.
+        if user_id is not None:
+            self.read_by_you = any(reader.user_id == user_id for reader in readers)
+            self.flagged_by_you = any(reader.user_id == user_id and reader.flagged for reader in readers)
+        else:
+            self.read_by_you = None
+            self.flagged_by_you = None
 
 
 class ContactMessage(Document):
