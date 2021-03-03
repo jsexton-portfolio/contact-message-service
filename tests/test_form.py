@@ -1,6 +1,3 @@
-import copy
-from typing import Dict, Any
-
 import pytest
 from pyocle.form import resolve_form, FormValidationError
 
@@ -8,86 +5,56 @@ from chalicelib.form import ContactMessageCreationForm, _clean_phone_number
 
 
 @pytest.fixture
-def sender_creation_form() -> Dict[str, Any]:
-    valid_sender_form = {
-        'alias': 'test',
-        'phone': '1234567890',
-        'email': 'test@test.com'
-    }
-
-    return copy.deepcopy(valid_sender_form)
+def unsupported_reason_form(message_creation_form_json):
+    message_creation_form_json['reason'] = 'invalid'
+    return message_creation_form_json
 
 
 @pytest.fixture
-def contact_creation_form(sender_creation_form) -> Dict[str, Any]:
-    valid_form = {
-        'message': 'message',
-        'reason': 'business',
-        'sender': sender_creation_form
-    }
-
-    return copy.deepcopy(valid_form)
+def null_reason_form(message_creation_form_json):
+    message_creation_form_json['reason'] = None
+    return message_creation_form_json
 
 
 @pytest.fixture
-def unsupported_reason_form(contact_creation_form):
-    contact_creation_form['reason'] = 'invalid'
-    return contact_creation_form
+def unsupported_reason_form(message_creation_form_json):
+    message_creation_form_json['reason'] = 'invalid'
+    return message_creation_form_json
 
 
 @pytest.fixture
-def null_reason_form(contact_creation_form):
-    contact_creation_form['reason'] = None
-    return contact_creation_form
+def null_message_form(message_creation_form_json):
+    message_creation_form_json['message'] = None
+    return message_creation_form_json
 
 
 @pytest.fixture
-def unsupported_reason_form(contact_creation_form):
-    contact_creation_form['reason'] = 'invalid'
-    return contact_creation_form
+def empty_message_form(message_creation_form_json):
+    message_creation_form_json['message'] = ''
+    return message_creation_form_json
 
 
 @pytest.fixture
-def null_message_form(contact_creation_form):
-    contact_creation_form['message'] = None
-    return contact_creation_form
+def empty_sender_alias_form(message_creation_form_json):
+    message_creation_form_json['sender']['alias'] = ''
+    return message_creation_form_json
 
 
 @pytest.fixture
-def empty_message_form(contact_creation_form):
-    contact_creation_form['message'] = ''
-    return contact_creation_form
-
-
-@pytest.fixture
-def empty_sender_alias_form(contact_creation_form):
-    contact_creation_form['sender']['alias'] = ''
-    return contact_creation_form
-
-
-@pytest.fixture
-def empty_sender_phone_form(contact_creation_form):
-    contact_creation_form['sender']['phone'] = ''
-    return contact_creation_form
-
-
-@pytest.fixture
-def get_fixture(request):
-    def _get_fixture_by_name(name):
-        return request.getfixturevalue(name)
-
-    return _get_fixture_by_name
+def empty_sender_phone_form(message_creation_form_json):
+    message_creation_form_json['sender']['phone'] = ''
+    return message_creation_form_json
 
 
 # See https://docs.pytest.org/en/latest/proposals/parametrize_with_fixtures.html
 # See https://github.com/pytest-dev/pytest/issues/349
 @pytest.mark.parametrize('fixture_name,error_count', [
-    pytest.param('null_reason_form', 1),
-    pytest.param('unsupported_reason_form', 1),
-    pytest.param('null_message_form', 1),
-    pytest.param('empty_message_form', 1),
-    pytest.param('empty_sender_alias_form', 1),
-    pytest.param('empty_sender_phone_form', 1),
+    ('null_reason_form', 1),
+    ('unsupported_reason_form', 1),
+    ('null_message_form', 1),
+    ('empty_message_form', 1),
+    ('empty_sender_alias_form', 1),
+    ('empty_sender_phone_form', 1),
 ])
 def test_resolve_form_when_form_is_invalid(get_fixture, fixture_name, error_count):
     form = get_fixture(fixture_name)
