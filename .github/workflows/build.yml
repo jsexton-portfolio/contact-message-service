@@ -34,3 +34,6 @@ jobs:
       - name: Test with pytest
         run: |
           pytest
+        env:
+          # boto3 clients require a region to be configured
+          AWS_DEFAULT_REGION: us-east-2
