@@ -17,6 +17,11 @@
       "api_gateway_stage": "api",
       "manage_iam_role": false,
       "iam_role_arn": "arn:aws:iam::811393626934:role/contact-message-service-prod",
+      "api_gateway_custom_domain": {
+        "domain_name": "api.justinsexton.net",
+        "url_prefix": "mail",
+        "certificate_arn": "arn:aws:acm:us-east-2:811393626934:certificate/428d80aa-6ae8-4cb5-9511-79798bb20867"
+      },
       "environment_variables": {
         "CONNECTION_STRING": "AQICAHguh7hq4XWINv4pK0oXt59Izrn+V2QkvsdgWXAZRHqHxgFGx7fsVXoVDWF9N+0y+0hIAAAAzjCBywYJKoZIhvcNAQcGoIG9MIG6AgEAMIG0BgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDGIWErfhWpvNHEF5xwIBEICBhjNyD1TwIHwhMbhVMr6i5Q69aoGkfo5RTQI5n+CsbnZj3wDzx0eoE37oENBn2KLuq0WNPltEE/aZciok2pw/TIG9R9lTWZP+HATX+86qSE8aKSdPvW9Myiph/nujyQB5MVIERtKD0yvjUCqoswK9YMyPeICP9O6HVh2UaGix5Wy9uBj1pyHh"
       }
