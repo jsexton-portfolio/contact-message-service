@@ -20,7 +20,7 @@ authorizer = CognitoUserPoolAuthorizer('portfolio-userpool',
                                            'arn:aws:cognito-idp:us-east-2:811393626934:userpool/us-east-2_MLclIlI5Y'])
 
 
-@app.route('/mail', methods=['POST'], cors=True)
+@app.route('/', methods=['POST'], cors=True)
 @pyocle.response.error_handler
 def create_contact_message():
     """
@@ -35,7 +35,7 @@ def create_contact_message():
     return pyocle.response.accepted(published_form)
 
 
-@app.route('/mail/{identifier}', methods=['GET'], cors=True, authorizer=authorizer)
+@app.route('/{identifier}', methods=['GET'], cors=True, authorizer=authorizer)
 @pyocle.response.error_handler
 def get_single_contact_message(identifier: str):
     """
@@ -49,7 +49,7 @@ def get_single_contact_message(identifier: str):
     return pyocle.response.ok(contact_message)
 
 
-@app.route('/mail', methods=['GET'], cors=True, authorizer=authorizer)
+@app.route('/', methods=['GET'], cors=True, authorizer=authorizer)
 @pyocle.response.error_handler
 def get_multiple_contact_message():
     """
