@@ -1,4 +1,5 @@
 .chalice/deployments/
+.chalice/deployed/
 .chalice/venv/
 
 # Created by https://www.gitignore.io/api/venv,flask,python,virtualenv,pycharm+all
