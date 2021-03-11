@@ -1,3 +1,7 @@
+# v0.6.2
+- Custom API domain name is registered with API gateway on deployment
+- Updated endpoints so that /mail will be the root of the API
+
 # v0.6.1
 - Bumped dependencies and cleaned requirements.txt
 
