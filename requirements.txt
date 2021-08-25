@@ -3,5 +3,5 @@ email-validator==1.1.2
 jsonpickle==1.5.1
 mongoengine==0.22.1
 mongoengine-goodjson==1.1.8
-pydantic==1.8
+pydantic==1.8.2
 pyocle==0.4.1
